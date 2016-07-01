@@ -1,9 +1,11 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Text.Inflections.OrdinalSpec (spec) where
 
 import Test.Hspec
 import Test.QuickCheck.Property
+import qualified Data.Text as T
 
 import Text.Inflections (ordinal, ordinalize)
 
@@ -57,11 +59,12 @@ fullOrdinals = do
 ordinalReturnsNotEmpty :: Spec
 ordinalReturnsNotEmpty =
   it "never returns empty" $ property $
-    property <$> not . null . ordinal
+    property <$> not . T.null . ordinal
 
 ordinalizeContainsTheSameNumber :: Spec
 ordinalizeContainsTheSameNumber =
   it "always returns the number as part of the result" $ property ordinalizeSamePrefix
 
 ordinalizeSamePrefix :: Integer -> Bool
-ordinalizeSamePrefix n = show n == take (length $ show n) (ordinalize n)
+ordinalizeSamePrefix n = T.pack s == T.take (length s) (ordinalize n)
+  where s = show n
